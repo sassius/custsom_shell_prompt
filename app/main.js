@@ -16,7 +16,7 @@ function prompt(){
       prompt();
     }
     else if (answer.startsWith("type ")){
-      const builtIn =["type","echo","exit 0"]
+      const builtIn =["type","echo","exit"]
       if (builtIn.includes(answer.slice(5))){
         console.log(`${answer.slice(5)} is a shell builtin`)
       }
