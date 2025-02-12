@@ -15,6 +15,13 @@ function prompt(){
       console.log(answer.slice(5))
       prompt();
     }
+    else if (answer.startsWith("type ")){
+      const builtIn =["type","echo","exit 0"]
+      if (builtIn.includes(answer.slice(5))){
+        console.log(`${answer.slice(5)} is a shell command`)
+      }
+      prompt();
+    }
     else {
       console.log(`${answer}: command not found`)
       prompt();
