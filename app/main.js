@@ -11,6 +11,10 @@ function prompt(){
     if (answer.toLowerCase() == 'exit 0'){
       rl.close();
     }
+    else if(answer.startsWith("echo ")){
+      
+      console.log(answer.slice(5))
+    }
     else {
       console.log(`${answer}: command not found`)
       prompt();
