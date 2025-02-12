@@ -12,8 +12,8 @@ function prompt(){
       rl.close();
     }
     else if(answer.startsWith("echo ")){
-      
       console.log(answer.slice(5))
+      prompt();
     }
     else {
       console.log(`${answer}: command not found`)
