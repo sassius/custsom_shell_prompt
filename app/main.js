@@ -21,7 +21,7 @@ function prompt(){
         console.log(`${answer.slice(5)} is a shell builtin`)
       }
       else(
-        console.log(`${answer}: not found`)
+        console.log(`${answer.slice(5)}: not found`)
       )
       prompt();
     }
