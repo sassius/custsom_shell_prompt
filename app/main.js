@@ -20,6 +20,9 @@ function prompt(){
       if (builtIn.includes(answer.slice(5))){
         console.log(`${answer.slice(5)} is a shell builtin`)
       }
+      else(
+        console.log(`${answer}: not found`)
+      )
       prompt();
     }
     else {
