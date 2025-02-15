@@ -25,6 +25,7 @@ function prompt(){
         console.log(`${command} is a shell builtin`);
       } else {
         const paths = process.env.PATH.split(path.delimiter);
+        console.log(paths)
         let found = false;
 
         for (let p of paths) {
