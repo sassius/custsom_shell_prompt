@@ -23,11 +23,13 @@ function prompt(){
         console.log(`${answer.slice(5)} is a shell builtin`)
       }
       else if(answer.slice(5)=='ls'){
-        fs.readdir(".", (err, files) => {  // "." means current directory
-        if (err) console.log("Error reading directory");
-        else console.log(files.join("\n")); // Print files line by line
-        prompt();
-        });
+        const paths = process.env.PATH.split(path.delimiter);
+        for (let p of paths){
+          const fullpath = path.join(p,answer.slice(5));
+          if (fs.existsSync(fullpath) && fs.statSync(fullpath).isFile()){
+            console.log(`${answer.slice(5)} is ${fullpath}`)
+          }
+        }
       }
       else(
         console.log(`${answer.slice(5)}: not found`)
