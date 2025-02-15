@@ -1,4 +1,6 @@
 const readline = require("readline");
+const fs = require("fs");
+const path = require("path")
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -19,6 +21,13 @@ function prompt(){
       const builtIn =["type","echo","exit"]
       if (builtIn.includes(answer.slice(5))){
         console.log(`${answer.slice(5)} is a shell builtin`)
+      }
+      else if(answer.slice(5)=='ls'){
+        fs.readdir(".", (err, files) => {  // "." means current directory
+        if (err) console.log("Error reading directory");
+        else console.log(files.join("\n")); // Print files line by line
+        prompt();
+        });
       }
       else(
         console.log(`${answer.slice(5)}: not found`)
