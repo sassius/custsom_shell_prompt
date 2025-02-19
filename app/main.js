@@ -28,7 +28,7 @@ function prompt(){
         for (let p of paths) {
           const fullPath = path.join(p, command);
           if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-             execFileSync(destPath, args, { encoding: 'utf-8', stdio: 'inherit' })
+            execFileSync(fullPath, args, { encoding: 'utf-8', stdio: 'inherit' })
             found = true;
             break;
           }
