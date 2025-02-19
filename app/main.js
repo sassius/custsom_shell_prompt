@@ -28,7 +28,7 @@ function prompt(){
         for (let p of paths) {
           const fullPath = path.join(p, command);
           if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-            execFileSync(fullPath, args, { encoding: 'utf-8', stdio: 'inherit' })
+            console.log(`${command} is ${fullPath}`);
             found = true;
             break;
           }
@@ -39,7 +39,20 @@ function prompt(){
         }
       }
     } else {
-      console.log(`${answer}: command not found`);
+    
+      // Try to execute an external program
+      const child = spawn(command, args, { stdio: "inherit" });
+
+      child.on("error", (err) => {
+        console.log(`${command}: command not found`);
+      });
+
+      child.on("exit", () => {
+        prompt();
+      });
+
+      return; // Don't call prompt() immediately, wait for process to exit
+    
     }
 
     prompt();
