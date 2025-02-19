@@ -50,6 +50,7 @@ function prompt() {
 
       child.on("error", () => {
         console.log(`${command}: command not found`);
+        prompt();
       });
 
       child.on("exit", () => {
