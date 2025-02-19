@@ -1,7 +1,7 @@
+const { spawn } = require("child_process");
 const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
-const { spawn } = require("child_process"); // Import spawn correctly
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -15,53 +15,51 @@ function prompt() {
       return;
     }
 
-    const args = answer.trim().split(/\s+/);
-    const command = args.shift();
-
-    if (!command) {
-      prompt();
-      return;
-    }
+    const parts = answer.trim().split(" ");
+    const command = parts[0];
+    const args = parts.slice(1);
 
     if (command === "echo") {
       console.log(args.join(" "));
     } else if (command === "type") {
-      const targetCommand = args[0];
+      const target = args[0];
       const builtIn = ["type", "echo", "exit"];
 
-      if (builtIn.includes(targetCommand)) {
-        console.log(`${targetCommand} is a shell builtin`);
+      if (builtIn.includes(target)) {
+        console.log(`${target} is a shell builtin`);
       } else {
         const paths = process.env.PATH.split(path.delimiter);
         let found = false;
 
         for (let p of paths) {
-          const fullPath = path.join(p, targetCommand);
+          const fullPath = path.join(p, target);
           if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-            console.log(`${targetCommand} is ${fullPath}`);
+            console.log(`${target} is ${fullPath}`);
             found = true;
             break;
           }
         }
 
         if (!found) {
-          console.log(`${targetCommand}: not found`);
+          console.log(`${target}: not found`);
         }
       }
     } else {
+      // Try executing an external command
       const child = spawn(command, args, { stdio: "inherit" });
 
-      child.on("error", (err) => {
-        process.stdout.write(`${command}: command not found\n`);
+      child.on("error", () => {
+        console.log(`${command}: command not found`);
       });
 
       child.on("exit", () => {
-        prompt();
+        prompt(); // Only prompt again AFTER command execution
       });
 
+      return; // Prevent immediate re-prompt
     }
 
-    prompt();
+    prompt(); // Only call prompt if no external command was executed
   });
 }
 
