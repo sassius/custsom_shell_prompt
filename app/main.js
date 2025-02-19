@@ -1,62 +1,69 @@
 const readline = require("readline");
 const fs = require("fs");
-const path = require("path")
-const { spawn } = require("child_process"); 
+const path = require("path");
+const { spawn } = require("child_process"); // Import spawn correctly
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-function prompt(){
+
+function prompt() {
   rl.question("$ ", (answer) => {
     if (answer.toLowerCase() === "exit 0") {
       rl.close();
       return;
     }
 
-    if (answer.startsWith("echo ")) {
-      console.log(answer.slice(5));
-    } else if (answer.startsWith("type ")) {
-      const command = answer.slice(5);
+    const args = answer.trim().split(/\s+/);
+    const command = args.shift();
+
+    if (!command) {
+      prompt();
+      return;
+    }
+
+    if (command === "echo") {
+      console.log(args.join(" "));
+    } else if (command === "type") {
+      const targetCommand = args[0];
       const builtIn = ["type", "echo", "exit"];
 
-      if (builtIn.includes(command)) {
-        console.log(`${command} is a shell builtin`);
+      if (builtIn.includes(targetCommand)) {
+        console.log(`${targetCommand} is a shell builtin`);
       } else {
         const paths = process.env.PATH.split(path.delimiter);
         let found = false;
 
         for (let p of paths) {
-          const fullPath = path.join(p, command);
+          const fullPath = path.join(p, targetCommand);
           if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-            console.log(`${command} is ${fullPath}`);
+            console.log(`${targetCommand} is ${fullPath}`);
             found = true;
             break;
           }
         }
 
         if (!found) {
-          console.log(`${command}: not found`);
+          console.log(`${targetCommand}: not found`);
         }
       }
     } else {
-    
-      // Try to execute an external program
       const child = spawn(command, args, { stdio: "inherit" });
 
       child.on("error", (err) => {
-        console.log(`${command}: command not found`);
+        console.error(`${command}: command not found`);
       });
 
       child.on("exit", () => {
         prompt();
       });
 
-      return; // Don't call prompt() immediately, wait for process to exit
-    
+      return; // Prevent immediate re-prompt
     }
 
     prompt();
   });
 }
+
 prompt();
