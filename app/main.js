@@ -59,7 +59,6 @@ function prompt() {
         prompt();
       });
 
-      return; // Prevent immediate re-prompt
     }
 
     prompt();
