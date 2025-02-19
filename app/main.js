@@ -52,7 +52,7 @@ function prompt() {
       const child = spawn(command, args, { stdio: "inherit" });
 
       child.on("error", (err) => {
-        console.error(`${command}: command not found`);
+        process.stdout.write(`${command}: command not found\n`);
       });
 
       child.on("exit", () => {
