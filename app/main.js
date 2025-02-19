@@ -6,8 +6,6 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-
-// Uncomment this block to pass the first stage
 function prompt(){
   rl.question("$ ", (answer) => {
     if (answer.toLowerCase() === "exit 0") {
@@ -25,15 +23,14 @@ function prompt(){
         console.log(`${command} is a shell builtin`);
       } else {
         const paths = process.env.PATH.split(path.delimiter);
-        console.log(paths)
         let found = false;
 
         for (let p of paths) {
           const fullPath = path.join(p, command);
           if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-            console.log(`${command} is ${fullPath}`);
+             execFileSync(destPath, args, { encoding: 'utf-8', stdio: 'inherit' })
             found = true;
-            break; // Stop after finding the first valid executable
+            break;
           }
         }
 
