@@ -51,7 +51,11 @@ function prompt() {
       console.log(process.cwd());
     } 
     else if (command == "cd"){
-      const resolvedpath = path.resolve(args[0]);
+      let targetpath = args[0] || process.env.HOME;
+      if (targetpath=="~"){
+        targetpath=process.env.HOME;
+      }
+      const resolvedpath = path.resolve(targetpath);
       if (fs.existsSync(resolvedpath) && fs.statSync(resolvedpath).isDirectory()){
         try {
           process.chdir(resolvedpath);
