@@ -48,7 +48,7 @@ function prompt() {
       }
     }
     else if(command == "pwd"){
-      console.log(process.cwd);
+      console.log(process.cwd());
     } 
     else {
       
