@@ -51,17 +51,17 @@ function prompt() {
       console.log(process.cwd());
     } 
     else if (command == "cd"){
-      const resolvedpath = path.resolve(args[1]);
+      const resolvedpath = path.resolve(args[0]);
       if (fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory()){
         try {
           process.chdir(resolvedpath);
         } 
         catch (err) {
-          console.log(`${args[1]}: No such file or directory`);
+          console.log(`${args[0]}: No such file or directory`);
     }
       }
       else{
-        console.log(`${args[1]}: No such file or directory`)
+        console.log(`${args[0]}: No such file or directory`)
       }
 
     }
