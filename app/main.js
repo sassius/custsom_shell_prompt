@@ -24,7 +24,7 @@ function prompt() {
     } 
     else if (command === "type") {
       const target = args[0];
-      const builtIn = ["type", "echo", "exit"];
+      const builtIn = ["type", "echo", "exit" , "pwd"];
 
       if (builtIn.includes(target)) {
         console.log(`${target} is a shell builtin`);
