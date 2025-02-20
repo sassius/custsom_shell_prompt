@@ -52,7 +52,7 @@ function prompt() {
     } 
     else if (command == "cd"){
       const resolvedpath = path.resolve(args[0]);
-      if (fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory()){
+      if (fs.existsSync(resolvedpath) && fs.statSync(resolvedpath).isDirectory()){
         try {
           process.chdir(resolvedpath);
         } 
