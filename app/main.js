@@ -60,9 +60,6 @@ function prompt() {
           console.log(`${args[0]}: No such file or directory`);
     }
       }
-      else{
-        console.log(`${args[0]}: No such file or directory`)
-      }
 
     }
     else {
