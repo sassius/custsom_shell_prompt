@@ -54,7 +54,7 @@ function prompt() {
       const resolvedpath = path.resolve(args[1]);
       if (fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory()){
         try {
-          process.chdir(resolvedPath);
+          process.chdir(resolvedpath);
         } 
         catch (err) {
           console.log(`${args[1]}: No such file or directory`);
