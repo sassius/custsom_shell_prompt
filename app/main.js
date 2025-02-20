@@ -21,13 +21,15 @@ function prompt() {
 
     if (command === "echo") {
       console.log(args.join(" "));
-    } else if (command === "type") {
+    } 
+    else if (command === "type") {
       const target = args[0];
       const builtIn = ["type", "echo", "exit"];
 
       if (builtIn.includes(target)) {
         console.log(`${target} is a shell builtin`);
-      } else {
+      } 
+      else {
         const paths = process.env.PATH.split(path.delimiter);
         let found = false;
 
@@ -44,8 +46,12 @@ function prompt() {
           console.log(`${target}: not found`);
         }
       }
-    } else {
-      // Try executing an external command
+    }
+    else if(command == "pwd"){
+      console.log(process.cwd);
+    } 
+    else {
+      
       const child = spawn(command, args, { stdio: "inherit" });
 
       child.on("error", () => {
@@ -54,13 +60,13 @@ function prompt() {
       });
 
       child.on("exit", () => {
-        prompt(); // Only prompt again AFTER command execution
+        prompt(); 
       });
 
-      return; // Prevent immediate re-prompt
+      return; 
     }
 
-    prompt(); // Only call prompt if no external command was executed
+    prompt(); 
   });
 }
 
