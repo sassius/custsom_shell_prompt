@@ -24,7 +24,7 @@ function prompt() {
     } 
     else if (command === "type") {
       const target = args[0];
-      const builtIn = ["type", "echo", "exit" , "pwd"];
+      const builtIn = ["type", "echo", "exit" , "pwd" ,"cd"];
 
       if (builtIn.includes(target)) {
         console.log(`${target} is a shell builtin`);
@@ -50,6 +50,16 @@ function prompt() {
     else if(command == "pwd"){
       console.log(process.cwd());
     } 
+    else if (command == "cd"){
+      const resolvedpath = path.resolve(args[1]);
+      if (args[1]){
+        process.chdir(resolvedpath);
+      }
+      else{
+        console.log(`${args[1]}: No such file or directory`)
+      }
+
+    }
     else {
       
       const child = spawn(command, args, { stdio: "inherit" });
