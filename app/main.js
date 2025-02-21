@@ -21,7 +21,7 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      const matches = input.match(/'([^']*)'|\S+/g) || [];
+      const matches = answer.match(/'([^']*)'|\S+/g) || [];
 
 let result = [];
 let temp = ""; // Temporary storage for merging adjacent quoted words
