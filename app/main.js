@@ -2,6 +2,7 @@ const { spawn } = require("child_process");
 const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
+const { Cone } = require("@react-three/drei");
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -68,6 +69,22 @@ function prompt() {
         console.log(`${args[0]}: No such file or directory`)
       }
 
+    }
+    else if (command=='cat'){
+      if (args[0].length == 0){
+        console.log("cat: missing file operand")
+      }
+      else{
+        for(const filepath of args){
+          try {
+            const content = fs.readFileSync(filepath,{encoding:'utf-8'})
+            process.stdout.write(content);
+          }
+          catch(err){
+            console.log(`${filepath}: No such file or directory`)
+          }
+        }
+      }
     }
     else {
       
