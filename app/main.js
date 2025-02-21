@@ -27,7 +27,8 @@ function prompt() {
         console.log(match[1])
       }
       else{
-        console.log(args.join(" "))
+        
+        console.log(input.replace(/\s+/g, " "))
       }
     } 
     else if (command === "type") {
