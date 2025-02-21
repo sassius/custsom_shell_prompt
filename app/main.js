@@ -22,11 +22,8 @@ function prompt() {
 
     if (command === "echo") {
       const input = answer.slice(5).trim()
-      const result = input.match(/[‘’']([^‘’']+)[‘’']/g) // Match quoted text
-    .map(str => str.slice(1, -1)) // Remove surrounding quotes
-    .join(''); // Join without modifying spaces
-
-console.log(result);
+      const result = input.replace(/[‘’']\s*([^‘’']?)\s[‘’']/g, '$1')
+      console.log(result)
     } 
     else if (command === "type") {
       const target = args[0];
