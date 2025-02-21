@@ -52,7 +52,9 @@ for (let word of matches) {
             result.push(temp); // Push merged quoted content
             temp = "";
         }
-        result.push(spaceBuffer); // Preserve spaces before the new word
+        if (!prevWasQuoted) {
+            result.push(" "); // Ensure only a single space for unquoted words
+        }
         result.push(word);
         prevWasQuoted = false;
     }
@@ -62,7 +64,8 @@ for (let word of matches) {
 
 if (temp) result.push(temp);
 
-console.log(result.join(""));
+console.log(result.join("").trim()); // Trim to handle any leading/trailing spaces
+
     } 
     else if (command === "type") {
       const target = args[0];
