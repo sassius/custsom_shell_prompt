@@ -28,32 +28,32 @@ function prompt() {
 
     let result = [];
     let temp = ""; // Temporary storage for merging adjacent quoted words
-    let prevEndsWithSpace = false;
+    let prevWasQuoted = false;
 
     for (let word of matches) {
         if (word.startsWith("'") && word.endsWith("'")) {
             let unquoted = word.slice(1, -1); // Remove surrounding single quotes
 
-            if (prevEndsWithSpace) {
-                result.push(temp); // Push previous word separately
-                temp = unquoted;  // Start a new word
+            if (prevWasQuoted) {
+                temp += unquoted; // Merge adjacent quoted words
             } else {
-                temp += unquoted; // Merge into previous if needed
+                if (temp) result.push(temp);
+                temp = unquoted;
             }
 
-            prevEndsWithSpace = unquoted.endsWith(" ");
+            prevWasQuoted = true;
         } else {
-            // If it's a normal word, push the previous temp and reset
+            // If it's a normal word, push previous temp and reset
             if (temp) {
                 result.push(temp);
                 temp = "";
             }
             result.push(word);
-            prevEndsWithSpace = false;
+            prevWasQuoted = false;
         }
     }
 
-    // Push last merged quoted word if any
+    // Push the last merged quoted word if any
     if (temp) result.push(temp);
 
     console.log(result.join(" "));
