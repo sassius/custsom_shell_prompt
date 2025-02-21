@@ -28,11 +28,20 @@ function prompt() {
 
     let result = [];
     let temp = ""; // Temporary storage for merging adjacent quoted words
+    let prevEndsWithSpace = false;
 
     for (let word of matches) {
         if (word.startsWith("'") && word.endsWith("'")) {
-            // Remove single quotes and merge if previous was quoted
-            temp += word.slice(1, -1);
+            let unquoted = word.slice(1, -1); // Remove surrounding single quotes
+
+            if (prevEndsWithSpace) {
+                result.push(temp); // Push previous word separately
+                temp = unquoted;  // Start a new word
+            } else {
+                temp += unquoted; // Merge into previous if needed
+            }
+
+            prevEndsWithSpace = unquoted.endsWith(" ");
         } else {
             // If it's a normal word, push the previous temp and reset
             if (temp) {
@@ -40,10 +49,11 @@ function prompt() {
                 temp = "";
             }
             result.push(word);
+            prevEndsWithSpace = false;
         }
     }
 
-    // Push last merged quoted word
+    // Push last merged quoted word if any
     if (temp) result.push(temp);
 
     console.log(result.join(" "));
