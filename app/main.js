@@ -21,8 +21,9 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      const input = answer.slice(5).trim()
-      const matches = input.match(/'([^']*)'|\s+|\S+/g) || [];
+      const input = answer.slice(5).trim(); // Remove 'echo ' part
+
+const matches = input.match(/'([^']*)'|\s+|\S+/g) || [];
 
 let result = [];
 let temp = "";
@@ -31,7 +32,7 @@ let spaceBuffer = "";
 
 for (let word of matches) {
     if (word.trim() === "") {
-        spaceBuffer += word; // Preserve spaces between words
+        spaceBuffer += word; // Store spaces to handle them properly
         continue;
     }
 
@@ -42,7 +43,7 @@ for (let word of matches) {
             temp += unquoted; // Stick together if exactly one space
         } else {
             if (temp) result.push(temp);
-            result.push(spaceBuffer); // Preserve spaces before the new word
+            if (spaceBuffer.length > 0) result.push(" "); // Preserve space before new quoted word
             temp = unquoted;
         }
 
@@ -52,8 +53,8 @@ for (let word of matches) {
             result.push(temp); // Push merged quoted content
             temp = "";
         }
-        if (!prevWasQuoted) {
-            result.push(" "); // Ensure only a single space for unquoted words
+        if (!prevWasQuoted && result.length > 0) {
+            result.push(" "); // Ensure only a single space between unquoted words
         }
         result.push(word);
         prevWasQuoted = false;
@@ -65,6 +66,7 @@ for (let word of matches) {
 if (temp) result.push(temp);
 
 console.log(result.join("").trim()); // Trim to handle any leading/trailing spaces
+
 
     } 
     else if (command === "type") {
