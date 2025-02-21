@@ -23,15 +23,30 @@ function prompt() {
     if (command === "echo") {
       const input = answer.slice(5).trim(); // Remove 'echo ' part
 
-    // Match single-quoted words and normal words
-    const matches = input.match(/'([^']*)'|\S+/g);
+    // Match words inside single quotes or normal words
+    const matches = input.match(/'([^']*)'|\S+/g) || [];
 
-    if (matches) {
-        // Remove single quotes and join words
-        console.log(matches.map(word => word.replace(/^'|'$/g, '')).join(" "));
-    } else {
-        console.log(""); // If nothing matches, print empty line
+    let result = [];
+    let temp = ""; // Temporary storage for merging adjacent quoted words
+
+    for (let word of matches) {
+        if (word.startsWith("'") && word.endsWith("'")) {
+            // Remove single quotes and merge if previous was quoted
+            temp += word.slice(1, -1);
+        } else {
+            // If it's a normal word, push the previous temp and reset
+            if (temp) {
+                result.push(temp);
+                temp = "";
+            }
+            result.push(word);
+        }
     }
+
+    // Push last merged quoted word
+    if (temp) result.push(temp);
+
+    console.log(result.join(" "));
     } 
     else if (command === "type") {
       const target = args[0];
