@@ -21,7 +21,7 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      const input = answer.slice(5).trim(); // Remove 'echo ' part
+      const input = answer.slice(5).trim(); // Remove 'echo ' par
 
 const matches = input.match(/'([^']*)'|\s+|\S+/g) || [];
 
