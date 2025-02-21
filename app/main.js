@@ -21,15 +21,17 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      const input = answer.slice(5).trim();
-      const match =  input.match(/^'([^']*)'$/) || input.match(/^"([^']*)"$/);
-      if (match){
-        console.log(match[1])
-      }
-      else{
-        
-        console.log(input.replace(/\s+/g, " "))
-      }
+      const input = answer.slice(5).trim(); // Remove 'echo ' part
+
+    // Match single-quoted words and normal words
+    const matches = input.match(/'([^']*)'|\S+/g);
+
+    if (matches) {
+        // Remove single quotes and join words
+        console.log(matches.map(word => word.replace(/^'|'$/g, '')).join(" "));
+    } else {
+        console.log(""); // If nothing matches, print empty line
+    }
     } 
     else if (command === "type") {
       const target = args[0];
