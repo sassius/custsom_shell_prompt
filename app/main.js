@@ -22,6 +22,7 @@ function prompt() {
 
     if (command === "echo") {
       const input = answer.slice(5).trim()
+      const matches = input.match(/'([^']*)'|\s+|\S+/g) || [];
       let result = [];
 let temp = "";
 let prevWasQuoted = false;
