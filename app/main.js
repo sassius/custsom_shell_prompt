@@ -39,8 +39,11 @@ for (let word of matches) {
     if (word.startsWith("'") && word.endsWith("'")) {
         let unquoted = word.slice(1, -1); // Remove surrounding single quotes
 
-        if (prevWasQuoted && spaceBuffer.length === 1) {
-            temp += unquoted; // Stick together if exactly one space
+        if (prevWasQuoted) {
+            if (spaceBuffer.length > 1) {
+                result.push(" "); // Add a space if more than one space was present
+            }
+            temp += unquoted; // Merge adjacent quoted words
         } else {
             if (temp) result.push(temp);
             if (spaceBuffer.length > 0) result.push(" "); // Preserve space before new quoted word
