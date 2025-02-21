@@ -53,7 +53,7 @@ function prompt() {
         }
     }
 
-    // Push the last merged quoted word if any
+  
     if (temp) result.push(temp);
 
     console.log(result.join(" "));
