@@ -22,8 +22,37 @@ function prompt() {
 
     if (command === "echo") {
       const input = answer.slice(5).trim()
-      const result = input.replace(/[‘’']\s*([^‘’']?)\s[‘’']/g, '$1')
-      console.log(result.slice(1,result.length-1))
+      const matches = input.match(/'([^']*)'|\S+/g) || [];
+
+let result = [];
+let temp = "";
+let prevWasQuoted = false;
+
+for (let word of matches) {
+    if (word.startsWith("'") && word.endsWith("'")) {
+        let unquoted = word.slice(1, -1); // Remove surrounding single quotes
+
+        if (prevWasQuoted) {
+            temp += unquoted; // Merge adjacent quoted words *without* space
+        } else {
+            if (temp) result.push(temp);
+            temp = unquoted;
+        }
+
+        prevWasQuoted = true;
+    } else {
+        if (temp) {
+            result.push(temp); // Push merged quoted content
+            temp = "";
+        }
+        result.push(word);
+        prevWasQuoted = false;
+    }
+}
+
+if (temp) result.push(temp);
+
+console.log(result.join(" "));
     } 
     else if (command === "type") {
       const target = args[0];
