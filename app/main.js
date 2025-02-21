@@ -22,38 +22,11 @@ function prompt() {
 
     if (command === "echo") {
       const input = answer.slice(5).trim()
-      const matches = input.match(/[‘’']([^‘’']+)[‘’']/g) || [];
+      const result = input.match(/[‘’']([^‘’']+)[‘’']/g) // Match quoted text
+    .map(str => str.slice(1, -1)) // Remove surrounding quotes
+    .join(''); // Join without modifying spaces
 
-let result = [];
-let temp = ""; // Temporary storage for merging adjacent quoted words
-let prevWasQuoted = false;
-
-for (let word of matches) {
-    if (word.startsWith("'")) {
-        let unquoted = word.replace(/'/g, ""); // Remove all single quotes
-
-        if (prevWasQuoted) {
-            temp += unquoted; // Merge adjacent quoted words
-        } else {
-            if (temp) result.push(temp);
-            temp = unquoted;
-        }
-
-        prevWasQuoted = true;
-    } else {
-        if (temp) {
-            result.push(temp); // Push merged quoted content
-            temp = "";
-        }
-        result.push(word);
-        prevWasQuoted = false;
-    }
-}
-
-// Push the last merged quoted word if any
-if (temp) result.push(temp);
-
-console.log(result.join(" ")); // Output the final processed string
+console.log(result);
     } 
     else if (command === "type") {
       const target = args[0];
