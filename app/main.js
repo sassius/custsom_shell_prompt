@@ -21,42 +21,38 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      const input = answer.slice(5).trim(); // Remove 'echo ' part
+      const matches = input.match(/'([^']*)'|\S+/g) || [];
 
-    // Match words inside single quotes or normal words
-    const matches = input.match(/'([^']*)'|\S+/g) || [];
+let result = [];
+let temp = ""; // Temporary storage for merging adjacent quoted words
+let prevWasQuoted = false;
 
-    let result = [];
-    let temp = ""; // Temporary storage for merging adjacent quoted words
-    let prevWasQuoted = false;
+for (let word of matches) {
+    if (word.startsWith("'")) {
+        let unquoted = word.replace(/'/g, ""); // Remove all single quotes
 
-    for (let word of matches) {
-        if (word.startsWith("'") && word.endsWith("'")) {
-            let unquoted = word.slice(1, -1); // Remove surrounding single quotes
-
-            if (prevWasQuoted) {
-                temp += unquoted; // Merge adjacent quoted words
-            } else {
-                if (temp) result.push(temp);
-                temp = unquoted;
-            }
-
-            prevWasQuoted = true;
+        if (prevWasQuoted) {
+            temp += unquoted; // Merge adjacent quoted words
         } else {
-            // If it's a normal word, push previous temp and reset
-            if (temp) {
-                result.push(temp);
-                temp = "";
-            }
-            result.push(word);
-            prevWasQuoted = false;
+            if (temp) result.push(temp);
+            temp = unquoted;
         }
+
+        prevWasQuoted = true;
+    } else {
+        if (temp) {
+            result.push(temp); // Push merged quoted content
+            temp = "";
+        }
+        result.push(word);
+        prevWasQuoted = false;
     }
+}
 
-    // Push the last merged quoted word if any
-    if (temp) result.push(temp);
+// Push the last merged quoted word if any
+if (temp) result.push(temp);
 
-    console.log(result.join(" "));
+console.log(result.join(" ")); // Output the final processed string
     } 
     else if (command === "type") {
       const target = args[0];
