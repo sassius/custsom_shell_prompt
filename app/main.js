@@ -23,24 +23,26 @@ function prompt() {
     if (command === "echo") {
       const input = answer.slice(5).trim()
       const matches = input.match(/'([^']*)'|\s+|\S+/g) || [];
-      let result = [];
+
+let result = [];
 let temp = "";
 let prevWasQuoted = false;
-let spaceCount = 0;
+let spaceBuffer = "";
 
 for (let word of matches) {
     if (word.trim() === "") {
-        spaceCount++;
+        spaceBuffer += word; // Preserve spaces between words
         continue;
     }
 
     if (word.startsWith("'") && word.endsWith("'")) {
         let unquoted = word.slice(1, -1); // Remove surrounding single quotes
 
-        if (prevWasQuoted && spaceCount === 1) {
+        if (prevWasQuoted && spaceBuffer.length === 1) {
             temp += unquoted; // Stick together if exactly one space
         } else {
             if (temp) result.push(temp);
+            result.push(spaceBuffer); // Preserve spaces before the new word
             temp = unquoted;
         }
 
@@ -50,16 +52,17 @@ for (let word of matches) {
             result.push(temp); // Push merged quoted content
             temp = "";
         }
+        result.push(spaceBuffer); // Preserve spaces before the new word
         result.push(word);
         prevWasQuoted = false;
     }
 
-    spaceCount = 0; // Reset space counter after processing a word
+    spaceBuffer = ""; // Reset space buffer after processing a word
 }
 
 if (temp) result.push(temp);
 
-console.log(result.join(" "));
+console.log(result.join(""));
     } 
     else if (command === "type") {
       const target = args[0];
