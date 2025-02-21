@@ -22,18 +22,22 @@ function prompt() {
 
     if (command === "echo") {
       const input = answer.slice(5).trim()
-      const matches = input.match(/'([^']*)'|\S+/g) || [];
-
-let result = [];
+      let result = [];
 let temp = "";
 let prevWasQuoted = false;
+let spaceCount = 0;
 
 for (let word of matches) {
+    if (word.trim() === "") {
+        spaceCount++;
+        continue;
+    }
+
     if (word.startsWith("'") && word.endsWith("'")) {
         let unquoted = word.slice(1, -1); // Remove surrounding single quotes
 
-        if (prevWasQuoted) {
-            temp += unquoted; // Merge adjacent quoted words *without* space
+        if (prevWasQuoted && spaceCount === 1) {
+            temp += unquoted; // Stick together if exactly one space
         } else {
             if (temp) result.push(temp);
             temp = unquoted;
@@ -48,6 +52,8 @@ for (let word of matches) {
         result.push(word);
         prevWasQuoted = false;
     }
+
+    spaceCount = 0; // Reset space counter after processing a word
 }
 
 if (temp) result.push(temp);
