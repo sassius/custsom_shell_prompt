@@ -21,7 +21,14 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      console.log(args.join(" "));
+      const input = answer.slice(5).trim();
+      const match =  input.match(/^'([^']*)'$/) || input.match(/^"([^']*)"$/);
+      if (match){
+        console.log(match[1])
+      }
+      else{
+        console.log(args.join(" "))
+      }
     } 
     else if (command === "type") {
       const target = args[0];
