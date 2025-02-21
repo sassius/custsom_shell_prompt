@@ -23,7 +23,7 @@ function prompt() {
     if (command === "echo") {
       const input = answer.slice(5).trim()
       const result = input.replace(/[‘’']\s*([^‘’']?)\s[‘’']/g, '$1')
-      console.log(result)
+      console.log(result.slice(1,result.length-1))
     } 
     else if (command === "type") {
       const target = args[0];
