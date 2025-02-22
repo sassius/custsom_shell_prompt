@@ -20,17 +20,34 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      const text = answer.replace("echo ", "");
-      if (text.startsWith("'") && text.endsWith("'")) {
-        const formattedString = text.slice(1, text.length - 1);
-        console.log(formattedString.replaceAll("'", ""));
+      const input = answer;
+      const regex = /^echo\s+(.+)$/; // Match everything after "echo"
+      const match = input.match(regex);
+
+      if (!match) {
+        console.error("Invalid syntax for echo");
         return;
       }
-      const formattedString = text
-        .split(" ")
-        .filter((t) => t !== "")
-        .join(" ");
-      console.log(formattedString);
+
+      const parts = match[1].match(/'([^']*)'|\S+/g); // Match quoted parts or standalone words
+
+      const output = parts
+        .map((part) =>
+          part.startsWith("'") && part.endsWith("'") ? part.slice(1, -1) : part
+        ) // Remove quotes
+        .reduce((acc, word, index, arr) => {
+          if (
+            index > 0 &&
+            arr[index - 1].endsWith("'") &&
+            word.startsWith("'")
+          ) {
+            return acc + word; // Concatenate adjacent quoted parts without spaces
+          } else {
+            return acc + (acc ? " " : "") + word; // Add space between words
+          }
+        }, "");
+
+      console.log(output);
     } else if (command === "type") {
       const target = args[0];
       const builtIn = ["type", "echo", "exit", "pwd", "cd"];
