@@ -20,8 +20,7 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      let args = answer;
-      let output = "";
+      let output = args.join(" ");
       let suppressNewline = false;
 
       // Check if the first argument is "-n" (which suppresses the newline)
@@ -29,37 +28,6 @@ function prompt() {
         suppressNewline = true;
         args.shift(); // Remove the flag from arguments
       }
-
-      // Process arguments while preserving quoted text correctly
-      let processedArgs = [];
-      let currentChunk = "";
-      let inQuote = false;
-      let quoteChar = "";
-
-      args.forEach((arg) => {
-        if (!inQuote && (arg.startsWith("'") || arg.startsWith('"'))) {
-          inQuote = true;
-          quoteChar = arg[0]; // Store the type of quote
-          currentChunk = arg.slice(1);
-        } else if (inQuote && arg.endsWith(quoteChar)) {
-          inQuote = false;
-          currentChunk += " " + arg.slice(0, -1); // Merge and remove the closing quote
-          processedArgs.push(currentChunk);
-          currentChunk = "";
-        } else if (inQuote) {
-          currentChunk += " " + arg; // Append to the quoted string
-        } else {
-          processedArgs.push(arg); // Normal word
-        }
-      });
-
-      // If a quote was opened but not closed, push the remaining chunk
-      if (currentChunk) {
-        processedArgs.push(currentChunk);
-      }
-
-      // Join the processed arguments into a final string
-      output = processedArgs.join(" ");
 
       // Handle escape sequences
       output = output
