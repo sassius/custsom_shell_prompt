@@ -21,8 +21,24 @@ function prompt() {
 
     if (command === "echo") {
       let input = answer.slice(5);
-      input = input.replaceAll("'", "");
-      input = input.replace(/\s+/g, " ").trim();
+
+      // Split the input based on quotes
+      let parts = input.split("'");
+      let result = [];
+
+      // Process each part alternately (unquoted and quoted)
+      for (let i = 0; i < parts.length; i++) {
+        if (i % 2 === 0) {
+          // For unquoted parts, collapse multiple spaces
+          result.push(parts[i].replace(/\s+/g, " ").trim());
+        } else {
+          // For quoted parts, preserve spaces
+          result.push(parts[i]);
+        }
+      }
+
+      // Join the parts back together
+      input = result.join("").trim();
       console.log(input);
     } else if (command === "type") {
       const target = args[0];
