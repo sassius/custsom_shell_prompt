@@ -24,7 +24,7 @@ function prompt() {
       // const input = answer.slice(5).trim(); // Remove 'echo ' part
       const match = answer.match(/^echo\s+((?:'.?')+)$/) || [];
       if (!match) {
-        console.error("Invalid syntax for echo");
+        console.log("Invalid syntax for echo");
         return;
     }
 
