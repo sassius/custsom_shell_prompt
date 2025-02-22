@@ -20,37 +20,37 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
+      const input = answer;
       const regex = /^echo\s+(.+)$/; // Match everything after "echo"
-    const match = input.match(regex);
+      const match = input.match(regex);
 
-    if (!match) {
+      if (!match) {
         console.error("Invalid syntax for echo");
         return;
-    }
+      }
 
-    const parts = match[1].match(/'([^']*)'|\S+/g); // Match quoted parts or standalone words
+      const parts = match[1].match(/'([^']*)'|\S+/g); // Match quoted parts or standalone words
 
-    let output = "";
-    let lastWasQuoted = false;
+      let output = "";
+      let lastWasQuoted = false;
 
-    parts.forEach((part, index) => {
+      parts.forEach((part, index) => {
         if (part.startsWith("'") && part.endsWith("'")) {
-            let content = part.slice(1, -1); // Remove surrounding quotes
+          let content = part.slice(1, -1); // Remove surrounding quotes
 
-            if (lastWasQuoted) {
-                output += content; // Concatenate directly if last was quoted
-            } else {
-                output += (output ? " " : "") + content; // Add space if needed
-            }
-            lastWasQuoted = true;
+          if (lastWasQuoted) {
+            output += content; // Concatenate directly if last was quoted
+          } else {
+            output += (output ? " " : "") + content; // Add space if needed
+          }
+          lastWasQuoted = true;
         } else {
-            output += (output ? " " : "") + part; // Always add space before unquoted words
-            lastWasQuoted = false;
+          output += (output ? " " : "") + part; // Always add space before unquoted words
+          lastWasQuoted = false;
         }
-    });
+      });
 
-    console.log(output);
-
+      console.log(output);
     } else if (command === "type") {
       const target = args[0];
       const builtIn = ["type", "echo", "exit", "pwd", "cd"];
