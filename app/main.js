@@ -22,6 +22,7 @@ function prompt() {
     if (command === "echo") {
       let input = answer.slice(5);
       input = input.replaceAll("'", "");
+      input = input.replace(/\s+/g, " ").trim();
       console.log(input);
     } else if (command === "type") {
       const target = args[0];
