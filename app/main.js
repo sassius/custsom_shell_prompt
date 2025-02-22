@@ -20,34 +20,37 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      const input = answer;
       const regex = /^echo\s+(.+)$/; // Match everything after "echo"
-      const match = input.match(regex);
+    const match = input.match(regex);
 
-      if (!match) {
+    if (!match) {
         console.error("Invalid syntax for echo");
         return;
-      }
+    }
 
-      const parts = match[1].match(/'([^']*)'|\S+/g); // Match quoted parts or standalone words
+    const parts = match[1].match(/'([^']*)'|\S+/g); // Match quoted parts or standalone words
 
-      const output = parts
-        .map((part) =>
-          part.startsWith("'") && part.endsWith("'") ? part.slice(1, -1) : part
-        ) // Remove quotes
-        .reduce((acc, word, index, arr) => {
-          if (
-            index > 0 &&
-            arr[index - 1].endsWith("'") &&
-            word.startsWith("'")
-          ) {
-            return acc + word; // Concatenate adjacent quoted parts without spaces
-          } else {
-            return acc + (acc ? " " : "") + word; // Add space between words
-          }
-        }, "");
+    let output = "";
+    let lastWasQuoted = false;
 
-      console.log(output);
+    parts.forEach((part, index) => {
+        if (part.startsWith("'") && part.endsWith("'")) {
+            let content = part.slice(1, -1); // Remove surrounding quotes
+
+            if (lastWasQuoted) {
+                output += content; // Concatenate directly if last was quoted
+            } else {
+                output += (output ? " " : "") + content; // Add space if needed
+            }
+            lastWasQuoted = true;
+        } else {
+            output += (output ? " " : "") + part; // Always add space before unquoted words
+            lastWasQuoted = false;
+        }
+    });
+
+    console.log(output);
+
     } else if (command === "type") {
       const target = args[0];
       const builtIn = ["type", "echo", "exit", "pwd", "cd"];
