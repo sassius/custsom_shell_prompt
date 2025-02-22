@@ -22,13 +22,13 @@ function prompt() {
 
     if (command === "echo") {
       // const input = answer.slice(5).trim(); // Remove 'echo ' part
-      const matches = answer.match(/^echo\s+((?:'.?')+)$/) || [];
-      if (!matches) {
+      const match = answer.match(/^echo\s+((?:'.?')+)$/) || [];
+      if (!match) {
         console.error("Invalid syntax for echo");
         return;
     }
 
-    const output = matches[1]
+    const output = match[1]
         .match(/'([^'])'/g) // Find all single-quoted parts
         .map(str => str.slice(1, -1)) // Remove surrounding single quotes
         .join(""); // Concatenate parts without spaces
