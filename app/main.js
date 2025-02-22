@@ -20,14 +20,17 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      const match = answer.match(/^echo\s+(.*)$/); // Capture everything after 'echo'
-      if (!match) {
-        console.error("Invalid syntax for echo");
+      const text = answer.replace("echo ", "");
+      if (text.startsWith("'") && text.endsWith("'")) {
+        const formattedString = text.slice(1, text.length - 1);
+        console.log(formattedString.replaceAll("'", ""));
         return;
       }
-
-      const output = match[1].replace(/\s+/g, " "); // Collapse multiple spaces into one
-      console.log(output.trim());
+      const formattedString = text
+        .split(" ")
+        .filter((t) => t !== "")
+        .join(" ");
+      console.log(formattedString);
     } else if (command === "type") {
       const target = args[0];
       const builtIn = ["type", "echo", "exit", "pwd", "cd"];
