@@ -15,9 +15,9 @@ function prompt() {
       return;
     }
 
-    const parts = answer.trim().split(" ");
+    const parts = answer.match(/'(.*?)'|"(.*?)"|\S+/g) || [];
     const command = parts[0];
-    const args = parts.slice(1);
+    const args = parts.slice(1).map((arg) => arg.replace(/^['"]|['"]$/g, ""));
 
     if (command === "echo") {
       let output = args.join(" ");
@@ -82,7 +82,7 @@ function prompt() {
         console.log(`${args[0]}: No such file or directory`);
       }
     } else if (command == "cat") {
-      if (args[0].length == 0) {
+      if (args.length == 0) {
         console.log("cat: missing file operand");
       } else {
         for (const filepath of args) {
