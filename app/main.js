@@ -20,36 +20,56 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      let input = answer.slice(5);
-      // let input = command.slice(5);
+      let args = answer;
+      let output = "";
+      let suppressNewline = false;
 
-      // Split the input based on quotes
-      let parts = input.split("'");
-      let result = [];
-
-      // Process each part alternately (unquoted and quoted)
-      for (let i = 0; i < parts.length; i++) {
-        if (i % 2 === 0) {
-          // For unquoted parts, collapse multiple spaces
-          result.push(parts[i].replace(/\s+/g, " ").trim());
-        } else {
-          // For quoted parts, preserve spaces
-          result.push(parts[i]);
-
-          // Add space only if next part has content and isn't immediately followed by another quote
-          if (
-            i < parts.length - 2 &&
-            parts[i + 1].trim() === "" &&
-            parts[i + 2]
-          ) {
-            result.push(" ");
-          }
-        }
+      // Check if the first argument is "-n" (which suppresses the newline)
+      if (args.length > 0 && args[0] === "-n") {
+        suppressNewline = true;
+        args.shift(); // Remove the flag from arguments
       }
 
-      // Join everything and trim
-      input = result.join("").trim();
-      console.log(input);
+      // Process arguments while preserving quoted text correctly
+      let processedArgs = [];
+      let currentChunk = "";
+      let inQuote = false;
+      let quoteChar = "";
+
+      args.forEach((arg) => {
+        if (!inQuote && (arg.startsWith("'") || arg.startsWith('"'))) {
+          inQuote = true;
+          quoteChar = arg[0]; // Store the type of quote
+          currentChunk = arg.slice(1);
+        } else if (inQuote && arg.endsWith(quoteChar)) {
+          inQuote = false;
+          currentChunk += " " + arg.slice(0, -1); // Merge and remove the closing quote
+          processedArgs.push(currentChunk);
+          currentChunk = "";
+        } else if (inQuote) {
+          currentChunk += " " + arg; // Append to the quoted string
+        } else {
+          processedArgs.push(arg); // Normal word
+        }
+      });
+
+      // If a quote was opened but not closed, push the remaining chunk
+      if (currentChunk) {
+        processedArgs.push(currentChunk);
+      }
+
+      // Join the processed arguments into a final string
+      output = processedArgs.join(" ");
+
+      // Handle escape sequences
+      output = output
+        .replace(/\\n/g, "\n") // Newline
+        .replace(/\\t/g, "\t") // Tab
+        .replace(/\\r/g, "\r") // Carriage return
+        .replace(/\\\\/g, "\\"); // Backslash
+
+      // Print the output with or without newline
+      process.stdout.write(output + (suppressNewline ? "" : "\n"));
     } else if (command === "type") {
       const target = args[0];
       const builtIn = ["type", "echo", "exit", "pwd", "cd"];
