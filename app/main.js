@@ -21,6 +21,7 @@ function prompt() {
 
     if (command === "echo") {
       let input = answer.slice(5);
+      // let input = command.slice(5);
 
       // Split the input based on quotes
       let parts = input.split("'");
@@ -33,12 +34,17 @@ function prompt() {
           result.push(parts[i].replace(/\s+/g, " ").trim());
         } else {
           // For quoted parts, preserve spaces
-          result.push(parts[i]);
+          // Add a space after the quoted part if it's not the last part
+          let quoted = parts[i];
+          if (i < parts.length - 1) {
+            quoted += " ";
+          }
+          result.push(quoted);
         }
       }
 
-      // Join the parts back together
-      input = result.join("").trim();
+      // Join the parts and ensure single spaces between words
+      input = result.join("").replace(/\s+/g, " ").trim();
       console.log(input);
     } else if (command === "type") {
       const target = args[0];
