@@ -20,13 +20,14 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      const match = answer.match(/^echo\s+(['"]?)(.*?)\1$/); // Matches text inside single/double quotes
+      const match = answer.match(/^echo\s+(.*)$/); // Capture everything after 'echo'
       if (!match) {
         console.error("Invalid syntax for echo");
         return;
       }
 
-      console.log(match[2]);
+      const output = match[1].replace(/\s+/g, " "); // Collapse multiple spaces into one
+      console.log(output.trim());
     } else if (command === "type") {
       const target = args[0];
       const builtIn = ["type", "echo", "exit", "pwd", "cd"];
