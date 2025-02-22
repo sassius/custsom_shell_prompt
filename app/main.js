@@ -34,17 +34,21 @@ function prompt() {
           result.push(parts[i].replace(/\s+/g, " ").trim());
         } else {
           // For quoted parts, preserve spaces
-          // Add a space after the quoted part if it's not the last part
-          let quoted = parts[i];
-          if (i < parts.length - 1) {
-            quoted += " ";
+          result.push(parts[i]);
+
+          // Add space only if next part has content and isn't immediately followed by another quote
+          if (
+            i < parts.length - 2 &&
+            parts[i + 1].trim() === "" &&
+            parts[i + 2]
+          ) {
+            result.push(" ");
           }
-          result.push(quoted);
         }
       }
 
-      // Join the parts and ensure single spaces between words
-      input = result.join("").replace(/\s+/g, " ").trim();
+      // Join everything and trim
+      input = result.join("").trim();
       console.log(input);
     } else if (command === "type") {
       const target = args[0];
