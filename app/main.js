@@ -15,29 +15,57 @@ function prompt() {
       return;
     }
 
-    const parts = answer.match(/'(.*?)'|"(.*?)"|\S+/g) || [];
+    const parts = answer.trim().split(" ");
     const command = parts[0];
-    const args = parts.slice(1).map((arg) => arg.replace(/^['"]|['"]$/g, ""));
+    const args = parts.slice(1);
 
     if (command === "echo") {
-      let output = args.join(" ");
-      let suppressNewline = false;
+      command = answer.slice(5);
 
-      // Check if the first argument is "-n" (which suppresses the newline)
-      if (args.length > 0 && args[0] === "-n") {
-        suppressNewline = true;
-        args.shift(); // Remove the flag from arguments
+      let result = [];
+      let inQuote = false;
+      let currentWord = "";
+
+      // Iterate through the string character by character
+      for (let i = 0; i < command.length; i++) {
+        const char = command[i];
+
+        if (char === "'") {
+          if (inQuote) {
+            // End of quoted string - add as single word
+            if (currentWord) {
+              result.push(currentWord);
+            }
+            currentWord = "";
+            inQuote = false;
+          } else {
+            // Start of quoted string
+            // Add any accumulated unquoted text as separate words
+            if (currentWord.trim()) {
+              result.push(...currentWord.trim().split(/\s+/));
+            }
+            currentWord = "";
+            inQuote = true;
+          }
+        } else if (inQuote) {
+          // Add character to current quoted string (preserve all spaces)
+          currentWord += char;
+        } else {
+          // Handle unquoted text
+          currentWord += char;
+        }
       }
 
-      // Handle escape sequences
-      output = output
-        .replace(/\\n/g, "\n") // Newline
-        .replace(/\\t/g, "\t") // Tab
-        .replace(/\\r/g, "\r") // Carriage return
-        .replace(/\\\\/g, "\\"); // Backslash
+      // Add any remaining content
+      if (currentWord.trim()) {
+        if (inQuote) {
+          result.push(currentWord);
+        } else {
+          result.push(...currentWord.trim().split(/\s+/));
+        }
+      }
 
-      // Print the output with or without newline
-      process.stdout.write(output + (suppressNewline ? "" : "\n"));
+      return result;
     } else if (command === "type") {
       const target = args[0];
       const builtIn = ["type", "echo", "exit", "pwd", "cd"];
@@ -82,7 +110,7 @@ function prompt() {
         console.log(`${args[0]}: No such file or directory`);
       }
     } else if (command == "cat") {
-      if (args.length == 0) {
+      if (args[0].length == 0) {
         console.log("cat: missing file operand");
       } else {
         for (const filepath of args) {
