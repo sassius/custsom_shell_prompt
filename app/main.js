@@ -8,6 +8,35 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
+function getCmd(answer) {
+  let args = [];
+  let currentArg = "";
+  let inSingleQuotes = false;
+  let inDoubleQuotes = false;
+
+  for (let i = 0; i < answer.length; i++) {
+    const char = answer[i];
+
+    if (char === '"' && !inSingleQuotes) {
+      inDoubleQuotes = !inDoubleQuotes;
+    } else if (char === "'" && !inDoubleQuotes) {
+      inSingleQuotes = !inSingleQuotes;
+    } else if (char === " " && !inSingleQuotes && !inDoubleQuotes) {
+      if (currentArg.length > 0) {
+        args.push(currentArg);
+        currentArg = "";
+      }
+    } else {
+      currentArg += char;
+    }
+  }
+  if (currentArg.length > 0) {
+    args.push(currentArg);
+  }
+
+  return { cmd: args[0], args: args.slice(1) };
+}
+
 function prompt() {
   rl.question("$ ", (answer) => {
     if (answer.toLowerCase() === "exit 0") {
@@ -15,41 +44,13 @@ function prompt() {
       return;
     }
 
-    const parts = answer.trim().split(" ");
-    const command = parts[0];
-    const args = parts.slice(1);
+    const { cmd, args } = getCmd(answer);
 
-    if (command === "echo") {
-      let input = answer.slice(5); // Extract everything after "echo "
-      let result = [];
-      let currentWord = "";
-      let inSingleQuotes = false;
-      let inDoubleQuotes = false;
-
-      for (let i = 0; i < input.length; i++) {
-        const char = input[i];
-
-        if (char === '"' && !inSingleQuotes) {
-          inDoubleQuotes = !inDoubleQuotes;
-        } else if (char === "'" && !inDoubleQuotes) {
-          inSingleQuotes = !inSingleQuotes;
-        } else if (char === " " && !inSingleQuotes && !inDoubleQuotes) {
-          if (currentWord.length > 0) {
-            result.push(currentWord);
-            currentWord = "";
-          }
-        } else {
-          currentWord += char;
-        }
-      }
-      if (currentWord.length > 0) {
-        result.push(currentWord);
-      }
-
-      console.log(result.join(" "));
-    } else if (command === "type") {
+    if (cmd === "echo") {
+      console.log(args.join(" "));
+    } else if (cmd === "type") {
       const target = args[0];
-      const builtIn = ["type", "echo", "exit", "pwd", "cd"];
+      const builtIn = ["type", "echo", "exit", "pwd", "cd", "cat"];
 
       if (builtIn.includes(target)) {
         console.log(`${target} is a shell builtin`);
@@ -70,60 +71,54 @@ function prompt() {
           console.log(`${target}: not found`);
         }
       }
-    } else if (command == "pwd") {
+    } else if (cmd === "pwd") {
       console.log(process.cwd());
-    } else if (command == "cd") {
-      let targetpath = args[0] || process.env.HOME;
-      if (targetpath == "~") {
-        targetpath = process.env.HOME;
+    } else if (cmd === "cd") {
+      let targetPath = args[0] || process.env.HOME;
+      if (targetPath === "~") {
+        targetPath = process.env.HOME;
       }
-      const resolvedpath = path.resolve(targetpath);
+      const resolvedPath = path.resolve(targetPath);
       if (
-        fs.existsSync(resolvedpath) &&
-        fs.statSync(resolvedpath).isDirectory()
+        fs.existsSync(resolvedPath) &&
+        fs.statSync(resolvedPath).isDirectory()
       ) {
         try {
-          process.chdir(resolvedpath);
+          process.chdir(resolvedPath);
         } catch (err) {
           console.log(`${args[0]}: No such file or directory`);
         }
       } else {
         console.log(`${args[0]}: No such file or directory`);
       }
-    } else if (command == "cat") {
-
+    } else if (cmd === "cat") {
       if (args.length === 0) {
         console.log("cat: missing file operand");
       } else {
         let output = "";
-        console.log(args);
         for (let filePath of args) {
           try {
-            filePath = filePath.trim().replace(/^['"]|['"]$/g, ""); // Remove surrounding quotes
+            filePath = filePath.replace(/^['"]|['"]$/g, ""); // Remove surrounding quotes
             const content = fs.readFileSync(filePath, "utf-8");
-            output += content; // Accumulate content without extra spaces
+            output += content + " ";
           } catch (err) {
-            console.log(`cat: "${filePath}": No such file or directory`);
-            return; // Stop further execution on error
+            console.log(`cat: ${filePath}: No such file or directory`);
+            return;
           }
         }
-        process.stdout.write(output + "\n"); // Print accumulated content
+        console.log(output.trim());
       }
     } else {
-      const child = spawn(command, args, { stdio: "inherit" });
-
+      const child = spawn(cmd, args, { stdio: "inherit" });
       child.on("error", () => {
-        console.log(`${command}: command not found`);
+        console.log(`${cmd}: command not found`);
         prompt();
       });
-
       child.on("exit", () => {
         prompt();
       });
-
       return;
     }
-
     prompt();
   });
 }
