@@ -18,18 +18,8 @@ function getCmd(answer) {
   for (let i = 0; i < answer.length; i++) {
     const char = answer[i];
     
-    if(escapeNext){
-      if (char===' '){
-        currentArg+=" ";
-      }
-      else{
-        currentArg+=char;
-      }
-    }
-    else if(char=="/"){
-      escapeNext=true;
-    }
-    else if (char === '"' && !inSingleQuotes) {
+  
+    if (char === '"' && !inSingleQuotes) {
       inDoubleQuotes = !inDoubleQuotes;
     } 
     else if (char === "'" && !inDoubleQuotes) {
