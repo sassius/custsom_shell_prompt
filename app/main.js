@@ -91,16 +91,21 @@ function prompt() {
         console.log(`${args[0]}: No such file or directory`);
       }
     } else if (command == "cat") {
-      if (args.length == 0) {
+      if (args.length === 0) {
         console.log("cat: missing file operand");
-      } else {
-        for (const filepath of args) {
+      }
+      else {
+        for (const filePath of args) {
           try {
-            const cleanPath = filepath.replace(/^['"]|['"]$/g, "");
-            const content = fs.readFileSync(cle, { encoding: "utf-8" });
-            process.stdout.write(content);
+            const cleanPath = filePath.replace(/^['"]|['"]$/g, ""); // Remove surrounding quotes
+            if (fs.existsSync(cleanPath) && fs.statSync(cleanPath).isFile()) {
+              const content = fs.readFileSync(cleanPath, "utf-8");
+              process.stdout.write(content);
+            } else {
+              console.log(`cat: ${filePath}: No such file or directory`);
+            }
           } catch (err) {
-            console.log(`${filepath}: No such file or directory`);
+            console.log(`cat: ${filePath}: No such file or directory`);
           }
         }
       }
