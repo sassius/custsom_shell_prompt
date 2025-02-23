@@ -19,8 +19,12 @@ function getCmd(answer) {
     const char = answer[i];
     
     if(escapeNext){
-      currentArg+=" ";
-      escapeNext=false;
+      if (char===' '){
+        currentArg+=" ";
+      }
+      else{
+        currentArg+=char;
+      }
     }
     else if(char=="/"){
       escapeNext=true;
