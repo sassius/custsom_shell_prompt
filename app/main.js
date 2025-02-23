@@ -91,10 +91,12 @@ function prompt() {
         console.log(`${args[0]}: No such file or directory`);
       }
     } else if (command == "cat") {
+
       if (args.length === 0) {
         console.log("cat: missing file operand");
       } else {
         let output = "";
+        console.log(args);
         for (let filePath of args) {
           try {
             filePath = filePath.trim().replace(/^['"]|['"]$/g, ""); // Remove surrounding quotes
