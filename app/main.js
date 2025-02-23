@@ -19,7 +19,7 @@ function getCmd(answer) {
     const char = answer[i];
     
     if(escapeNext){
-      currentArg+=char;
+      currentArg+=" ";
       escapeNext=false;
     }
     else if(char=="/"){
