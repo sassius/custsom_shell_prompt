@@ -92,7 +92,7 @@ function prompt() {
         console.log(`${args[0]}: No such file or directory`);
       }
     } else if (cmd === "cat") {
-      console.log(args);
+      // console.log(args);
       if (args.length === 0) {
         console.log("cat: missing file operand");
       } else {
@@ -100,11 +100,11 @@ function prompt() {
         for (let filePath of args) {
           try {
             filePath = filePath.replace(/^['"]|['"]$/g, ""); // Remove surrounding quotes
-            console.log(filePath)
+            // console.log(filePath)
             const content = fs.readFileSync(filePath, "utf-8");
-            console.log(content)
+            // console.log(content)
             output += content;
-            console.log(output)
+            // console.log(output)
           } catch (err) {
             console.log(`cat: ${filePath}: No such file or directory`);
             return;
