@@ -10,20 +10,46 @@ const rl = readline.createInterface({
 
 function prompt() {
   rl.question("$ ", (answer) => {
-    if (answer.trim().toLowerCase() === "exit 0") {
+    if (answer.toLowerCase() === "exit 0") {
       rl.close();
       return;
     }
 
-    const parts = answer.trim().match(/(?:[^\s"]+|"[^"]*"|'[^']*')+/g) || [];
-    const command = parts[0] || "";
-    const args = parts.slice(1).map((arg) => arg.replace(/^['"]|['"]$/g, "")); // Remove surrounding quotes
+    const parts = answer.trim().split(" ");
+    const command = parts[0];
+    const args = parts.slice(1);
 
     if (command === "echo") {
-      console.log(args.join(" "));
+      let input = answer.slice(5); // Extract everything after "echo "
+      let result = [];
+      let currentWord = "";
+      let inSingleQuotes = false;
+      let inDoubleQuotes = false;
+
+      for (let i = 0; i < input.length; i++) {
+        const char = input[i];
+
+        if (char === '"' && !inSingleQuotes) {
+          inDoubleQuotes = !inDoubleQuotes;
+        } else if (char === "'" && !inDoubleQuotes) {
+          inSingleQuotes = !inSingleQuotes;
+        } else if (char === " " && !inSingleQuotes && !inDoubleQuotes) {
+          if (currentWord.length > 0) {
+            result.push(currentWord);
+            currentWord = "";
+          }
+        } else {
+          currentWord += char;
+        }
+      }
+      if (currentWord.length > 0) {
+        result.push(currentWord);
+      }
+
+      console.log(result.join(" "));
     } else if (command === "type") {
       const target = args[0];
-      const builtIn = ["type", "echo", "exit", "pwd", "cd", "cat"];
+      const builtIn = ["type", "echo", "exit", "pwd", "cd"];
 
       if (builtIn.includes(target)) {
         console.log(`${target} is a shell builtin`);
@@ -44,36 +70,37 @@ function prompt() {
           console.log(`${target}: not found`);
         }
       }
-    } else if (command === "pwd") {
+    } else if (command == "pwd") {
       console.log(process.cwd());
-    } else if (command === "cd") {
-      let targetPath = args[0] || process.env.HOME;
-      if (targetPath === "~") targetPath = process.env.HOME;
-
-      const resolvedPath = path.resolve(targetPath);
+    } else if (command == "cd") {
+      let targetpath = args[0] || process.env.HOME;
+      if (targetpath == "~") {
+        targetpath = process.env.HOME;
+      }
+      const resolvedpath = path.resolve(targetpath);
       if (
-        fs.existsSync(resolvedPath) &&
-        fs.statSync(resolvedPath).isDirectory()
+        fs.existsSync(resolvedpath) &&
+        fs.statSync(resolvedpath).isDirectory()
       ) {
         try {
-          process.chdir(resolvedPath);
+          process.chdir(resolvedpath);
         } catch (err) {
-          console.log(`cd: ${args[0]}: Permission denied`);
+          console.log(`${args[0]}: No such file or directory`);
         }
       } else {
-        console.log(`cd: ${args[0]}: No such file or directory`);
+        console.log(`${args[0]}: No such file or directory`);
       }
-    } else if (command === "cat") {
-      if (args.length === 0) {
+    } else if (command == "cat") {
+      if (args.length == 0) {
         console.log("cat: missing file operand");
       } else {
-        for (const rawPath of args) {
+        for (const filepath of args) {
           try {
-            const filePath = rawPath.replace(/^['"]|['"]$/g, "");
-            const content = fs.readFileSync(filePath, "utf-8");
+            const cleanPath = filepath.replace(/^['"]|['"]$/g, "");
+            const content = fs.readFileSync(cle, { encoding: "utf-8" });
             process.stdout.write(content);
           } catch (err) {
-            console.log(`cat: ${rawPath}: No such file or directory`);
+            console.log(`${filepath}: No such file or directory`);
           }
         }
       }
@@ -82,6 +109,7 @@ function prompt() {
 
       child.on("error", () => {
         console.log(`${command}: command not found`);
+        prompt();
       });
 
       child.on("exit", () => {
