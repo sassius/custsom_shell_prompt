@@ -98,15 +98,18 @@ function prompt() {
         let output = "";
         for (let filePath of args) {
           try {
-            filePath = filePath.replace(/^['"]|['"]$/g, ""); // Remove surrounding quotes
-            const content = fs.readFileSync(filePath, "utf-8");
-            output += content + " ";
+            filePath = filePath.trim().replace(/^['"]|['"]$/g, ""); // Remove surrounding quotes
+            const content = fs.readFileSync(filePath, "utf-8").trim();
+            if (output && content) {
+              output += content.startsWith(".") ? "" : " "; // Avoid extra space before concatenated text
+            }
+            output += content;
           } catch (err) {
-            console.log(`cat: ${filePath}: No such file or directory`);
-            return;
+            console.log(`cat: "${filePath}": No such file or directory`);
+            return; // Stop execution if any file is missing
           }
         }
-        console.log(output.trim());
+        process.stdout.write(output + "\n");
       }
     } else {
       const child = spawn(cmd, args, { stdio: "inherit" });
