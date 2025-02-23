@@ -20,15 +20,15 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      command = answer.slice(5);
+      let input = answer.slice(5);
 
       let result = [];
       let inQuote = false;
       let currentWord = "";
 
       // Iterate through the string character by character
-      for (let i = 0; i < command.length; i++) {
-        const char = command[i];
+      for (let i = 0; i < input.length; i++) {
+        const char = input[i];
 
         if (char === "'") {
           if (inQuote) {
