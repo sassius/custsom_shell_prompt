@@ -20,7 +20,7 @@ function prompt() {
     const args = parts.slice(1);
 
     if (command === "echo") {
-      let input = command.slice(5); // Extract everything after "echo "
+      let input = answer.slice(5); // Extract everything after "echo "
       let result = [];
       let currentWord = "";
       let inSingleQuotes = false;
