@@ -22,7 +22,7 @@ function getCmd(answer) {
       currentArg+=char;
       escapeNext=false;
     }
-    else if(char="/"){
+    else if(char=="/"){
       escapeNext=true;
     }
     else if (char === '"' && !inSingleQuotes) {
