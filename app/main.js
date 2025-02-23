@@ -92,24 +92,25 @@ function prompt() {
         console.log(`${args[0]}: No such file or directory`);
       }
     } else if (cmd === "cat") {
+      console.log(args);
       if (args.length === 0) {
         console.log("cat: missing file operand");
       } else {
         let output = "";
         for (let filePath of args) {
           try {
-            filePath = filePath.trim().replace(/^['"]|['"]$/g, ""); // Remove surrounding quotes
-            const content = fs.readFileSync(filePath, "utf-8").trim();
-            if (output && content) {
-              output += content.startsWith(".") ? "" : " "; // Avoid extra space before concatenated text
-            }
+            filePath = filePath.replace(/^['"]|['"]$/g, ""); // Remove surrounding quotes
+            console.log(filePath)
+            const content = fs.readFileSync(filePath, "utf-8");
+            console.log(content)
             output += content;
+            console.log(output)
           } catch (err) {
-            console.log(`cat: "${filePath}": No such file or directory`);
-            return; // Stop execution if any file is missing
+            console.log(`cat: ${filePath}: No such file or directory`);
+            return;
           }
         }
-        process.stdout.write(output + "\n");
+        console.log(output.trim());
       }
     } else {
       const child = spawn(cmd, args, { stdio: "inherit" });
