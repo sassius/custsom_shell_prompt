@@ -13,15 +13,25 @@ function getCmd(answer) {
   let currentArg = "";
   let inSingleQuotes = false;
   let inDoubleQuotes = false;
+  let escapeNext = false;
 
   for (let i = 0; i < answer.length; i++) {
     const char = answer[i];
-
-    if (char === '"' && !inSingleQuotes) {
+    
+    if(escapeNext){
+      currentArg+=char;
+      escapeNext=false;
+    }
+    else if(char="/"){
+      escapeNext=true;
+    }
+    else if (char === '"' && !inSingleQuotes) {
       inDoubleQuotes = !inDoubleQuotes;
-    } else if (char === "'" && !inDoubleQuotes) {
+    } 
+    else if (char === "'" && !inDoubleQuotes) {
       inSingleQuotes = !inSingleQuotes;
-    } else if (char === " " && !inSingleQuotes && !inDoubleQuotes) {
+    } 
+    else if (char === " " && !inSingleQuotes && !inDoubleQuotes) {
       if (currentArg.length > 0) {
         args.push(currentArg);
         currentArg = "";
@@ -47,6 +57,7 @@ function prompt() {
     const { cmd, args } = getCmd(answer);
 
     if (cmd === "echo") {
+      // console.log(args)
       console.log(args.join(" "));
     } else if (cmd === "type") {
       const target = args[0];
