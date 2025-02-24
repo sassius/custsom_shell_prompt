@@ -5,7 +5,7 @@ const path = require("path");
 const { isStringObject } = require("util/types");
 
 const rl = readline.createInterface({
-  input: process.stdin,
+  answer: process.stdin,
   output: process.stdout,
 });
 const specialCharacters = ["\\", '"', "$", "\n"];
@@ -36,10 +36,10 @@ function getCmd(answer) {
       // currentArg += char;
       // fo quoted backslashes
       if (char == "//" && (inSingleQuotes || inDoubleQuotes)) {
-        if (inDoubleQuotes && specialCharacters.includes(input[i + 1])) {
-          currentArg += input[i + 1];
+        if (inDoubleQuotes && specialCharacters.includes(answer[i + 1])) {
+          currentArg += answer[i + 1];
           i++;
-        } else if (input[i + 1] === "//") {
+        } else if (answer[i + 1] === "//") {
           currentArg += "//";
           i++;
         } else {
@@ -47,7 +47,7 @@ function getCmd(answer) {
         }
       } else if (char === "\\" && !(inSingleQuotes || inDoubleQuotes)) {
         //Preserve the literal value of the next character
-        currentArg += input[i + 1];
+        currentArg += answer[i + 1];
         i++;
       } else {
         //If the character is not a space or single or double quote, we add it to the current words
