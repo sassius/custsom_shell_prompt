@@ -15,7 +15,6 @@ function getCmd(answer) {
   let currentArg = "";
   let inSingleQuotes = false;
   let inDoubleQuotes = false;
-  let escapeNext = false;
 
   for (let i = 0; i < answer.length; i++) {
     const char = answer[i];
