@@ -34,12 +34,14 @@ function getCmd(answer) {
     } else {
       // currentArg += char;
       // fo quoted backslashes
-      if (char == "//" && (inSingleQuotes || inDoubleQuotes)) {
+      if (char == "\\" && (inSingleQuotes || inDoubleQuotes)) {
         if (inDoubleQuotes && specialCharacters.includes(answer[i + 1])) {
           currentArg += answer[i + 1];
+          console.log(currentArg)
           i++;
-        } else if (answer[i + 1] === "//") {
-          currentArg += "//";
+          break
+        } else if (answer[i + 1] === "\\") {
+          currentArg += "\\";
           i++;
         } else {
           currentArg += char;
