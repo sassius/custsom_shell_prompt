@@ -2,7 +2,7 @@ const { spawn } = require("child_process");
 const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
-// const { isStringObject } = require("util/types");
+// const { isStringObject } = require("util/types")
 
 const rl = readline.createInterface({
   input: process.stdin,
