@@ -2,11 +2,13 @@ const { spawn } = require("child_process");
 const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
+const { isStringObject } = require("util/types");
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
+const specialCharacters = ["\\", '"', "$", "\n"];
 
 function getCmd(answer) {
   let args = [];
@@ -31,7 +33,26 @@ function getCmd(answer) {
         currentArg = "";
       }
     } else {
-      currentArg += char;
+      // currentArg += char;
+      // fo quoted backslashes
+      if (char == "//" && (inSingleQuotes || inDoubleQuotes)) {
+        if (inDoubleQuotes && specialCharacters.includes(input[i + 1])) {
+          currentArg += input[i + 1];
+          i++;
+        } else if (input[i + 1] === "//") {
+          currentArg += "//";
+          i++;
+        } else {
+          currentArg += char;
+        }
+      } else if (char === "\\" && !(inSingleQuotes || inDoubleQuotes)) {
+        //Preserve the literal value of the next character
+        currentArg += input[i + 1];
+        i++;
+      } else {
+        //If the character is not a space or single or double quote, we add it to the current words
+        currentArg += char;
+      }
     }
   }
   if (currentArg.length > 0) {
