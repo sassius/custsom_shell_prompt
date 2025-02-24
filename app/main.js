@@ -5,7 +5,7 @@ const path = require("path");
 // const { isStringObject } = require("util/types");
 
 const rl = readline.createInterface({
-  answer: process.stdin,
+  input: process.stdin,
   output: process.stdout,
 });
 const specialCharacters = ["\\", '"', "$", "\n"];
