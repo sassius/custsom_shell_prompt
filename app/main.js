@@ -15,35 +15,49 @@ function getCmd(answer) {
   let currentArg = "";
   let inSingleQuotes = false;
   let inDoubleQuotes = false;
-  let escapeNext = false;
 
   for (let i = 0; i < answer.length; i++) {
     const char = answer[i];
-
-    if (escapeNext) {
-      currentArg += char; // Always add the escaped character as-is
-      escapeNext = false;
-    } else if (char === "\\") {
-      escapeNext = true; // Mark the next character as escaped
-    } else if (char === '"' && !inSingleQuotes) {
+    
+  
+    if (char === '"' && !inSingleQuotes) {
       inDoubleQuotes = !inDoubleQuotes;
-    } else if (char === "'" && !inDoubleQuotes) {
+    } 
+    else if (char === "'" && !inDoubleQuotes) {
       inSingleQuotes = !inSingleQuotes;
-    } else if (char === " " && !inSingleQuotes && !inDoubleQuotes) {
+    } 
+    else if (char === " " && !inSingleQuotes && !inDoubleQuotes) {
       if (currentArg.length > 0) {
         args.push(currentArg);
         currentArg = "";
       }
     } else {
-      currentArg += char;
+      // currentArg += char;
+      // fo quoted backslashes
+      if (char == "" && (inSingleQuotes || inDoubleQuotes)) {
+        if (inDoubleQuotes && specialCharacters.includes(answer[i + 1])) {
+          currentArg += answer[i + 1];
+          console.log(currentArg)
+          i++;
+          
+        }  else {
+          currentArg += char;
+        }
+      } else if (char === "\\" && !(inSingleQuotes || inDoubleQuotes)) {
+        //Preserve the literal value of the next character
+        currentArg += answer[i + 1];
+        i++;
+      } else {
+        //If the character is not a space or single or double quote, we add it to the current words
+        currentArg += char;
+      }
     }
   }
-
   if (currentArg.length > 0) {
     args.push(currentArg);
   }
 
-  return { cmd: args[0] || "", args: args.slice(1) };
+  return { cmd: args[0], args: args.slice(1) };
 }
 
 function prompt() {
@@ -56,7 +70,7 @@ function prompt() {
     const { cmd, args } = getCmd(answer);
 
     if (cmd === "echo") {
-      // console.log(args)
+      console.log(args)
       console.log(args.join(" "));
     } else if (cmd === "type") {
       const target = args[0];
