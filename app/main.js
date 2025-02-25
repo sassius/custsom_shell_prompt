@@ -35,12 +35,24 @@ function getCmd(answer) {
       // currentArg += char;
       // fo quoted backslashes
       if (char == "\\" && inDoubleQuotes) {
-        if (inDoubleQuotes && specialCharacters.includes(answer[i + 1])) {
-          currentArg += answer[i + 1];
-          // console.log(currentArg)
-          i++;
+        // if (inDoubleQuotes && specialCharacters.includes(answer[i + 1])) {
+        //   currentArg += answer[i + 1];
+        //   // console.log(currentArg)
+        //   i++;
           
-        }  else {
+        // }  else {
+        //   currentArg += "\\";
+        // }
+        if (i + 1 < answer.length) {
+          if (answer[i + 1] === "'") {
+            currentArg += "\\" + answer[i + 1]; // Preserve \'
+          } else if (specialCharacters.includes(answer[i + 1])) {
+            currentArg += answer[i + 1];
+          } else {
+            currentArg += "\\";
+          }
+          i++;
+        } else {
           currentArg += "\\";
         }
         
