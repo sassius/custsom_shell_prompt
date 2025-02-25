@@ -70,7 +70,7 @@ function prompt() {
     const { cmd, args } = getCmd(answer);
 
     if (cmd === "echo") {
-      console.log(args)
+      // console.log(args)
       console.log(args.join(" "));
     } else if (cmd === "type") {
       const target = args[0];
