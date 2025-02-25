@@ -35,20 +35,15 @@ function getCmd(answer) {
       // currentArg += char;
       // fo quoted backslashes
       if (char == "\\" && inDoubleQuotes) {
-        // if (inDoubleQuotes && specialCharacters.includes(answer[i + 1])) {
-        //   currentArg += answer[i + 1];
-        //   // console.log(currentArg)
-        //   i++;
-          
-        // }  else {
-        //   currentArg += char;
-        // }
-        if (i + 1 < answer.length) {
-          currentArg += "\\" + answer[i + 1]; // Preserve backslash before any character
+        if (inDoubleQuotes && specialCharacters.includes(answer[i + 1])) {
+          currentArg += answer[i + 1];
+          // console.log(currentArg)
           i++;
-        } else {
-          currentArg += "\\"; // Preserve standalone backslash
+          
+        }  else {
+          currentArg += "\\";
         }
+        
       } else if (char === "\\" && !(inSingleQuotes || inDoubleQuotes)) {
         //Preserve the literal value of the next character
         currentArg += answer[i + 1];
@@ -79,8 +74,9 @@ function prompt() {
       // console.log(args)
       // console.log(args.join(" "));
       let output = args.join(" ");
-      output = output.replace(/\\'/g, "'"); // Convert \' to '
-      output = output.replace(/\\"/g, '"'); // Convert \" to "
+      // output = output.replace(/\\'/g, "'"); // Convert \' to '
+      // output = output.replace(/\\"/g, '"'); // Convert \" to "
+      output = output.replace(/\\(?=["'$\\])/g, "");
       console.log(output);
     } else if (cmd === "type") {
       const target = args[0];
