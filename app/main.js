@@ -71,7 +71,10 @@ function prompt() {
 
     if (cmd === "echo") {
       // console.log(args)
-      console.log(args.join(" "));
+      // console.log(args.join(" "));
+      let output = args.join(" ");
+      output = output.replace(/\\'/g, "'"); // Convert \' to a single quote
+      console.log(output);
     } else if (cmd === "type") {
       const target = args[0];
       const builtIn = ["type", "echo", "exit", "pwd", "cd"];
