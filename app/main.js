@@ -35,13 +35,19 @@ function getCmd(answer) {
       // currentArg += char;
       // fo quoted backslashes
       if (char == "\\" && inDoubleQuotes) {
-        if (inDoubleQuotes && specialCharacters.includes(answer[i + 1])) {
-          currentArg += answer[i + 1];
-          // console.log(currentArg)
-          i++;
+        // if (inDoubleQuotes && specialCharacters.includes(answer[i + 1])) {
+        //   currentArg += answer[i + 1];
+        //   // console.log(currentArg)
+        //   i++;
           
-        }  else {
-          currentArg += char;
+        // }  else {
+        //   currentArg += char;
+        // }
+        if (i + 1 < answer.length) {
+          currentArg += "\\" + answer[i + 1]; // Preserve backslash before any character
+          i++;
+        } else {
+          currentArg += "\\"; // Preserve standalone backslash
         }
       } else if (char === "\\" && !(inSingleQuotes || inDoubleQuotes)) {
         //Preserve the literal value of the next character
