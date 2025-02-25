@@ -123,7 +123,7 @@ function prompt() {
         let output = "";
         for (let filePath of args) {
           try {
-            filePath = filePath.replace(/^['"]|['"]$/g, ""); // Remove surrounding quotes
+            filePath = filePath.replace(/^"(.*)"$|^'(.*)'$/, "$1$2"); // Remove surrounding quotes
             // console.log(filePath)
             const content = fs.readFileSync(filePath, "utf-8");
             // console.log(content)
