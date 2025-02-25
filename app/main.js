@@ -34,10 +34,10 @@ function getCmd(answer) {
     } else {
       // currentArg += char;
       // fo quoted backslashes
-      if (char == "\\" && (inSingleQuotes || inDoubleQuotes)) {
+      if (char == "\\" && inDoubleQuotes) {
         if (inDoubleQuotes && specialCharacters.includes(answer[i + 1])) {
           currentArg += answer[i + 1];
-          console.log(currentArg)
+          // console.log(currentArg)
           i++;
           
         }  else {
@@ -73,8 +73,8 @@ function prompt() {
       // console.log(args)
       // console.log(args.join(" "));
       let output = args.join(" ");
-      // output = output.replace(/\\'/g, "'"); // Convert \' to '
-      // output = output.replace(/\\"/g, '"'); // Convert \" to "
+      output = output.replace(/\\'/g, "'"); // Convert \' to '
+      output = output.replace(/\\"/g, '"'); // Convert \" to "
       console.log(output);
     } else if (cmd === "type") {
       const target = args[0];
