@@ -73,7 +73,8 @@ function prompt() {
       // console.log(args)
       // console.log(args.join(" "));
       let output = args.join(" ");
-      output = output.replace(/\\'/g, "'"); // Convert \' to a single quote
+      output = output.replace(/\\'/g, "'"); // Convert \' to '
+      output = output.replace(/\\"/g, '"'); // Convert \" to "
       console.log(output);
     } else if (cmd === "type") {
       const target = args[0];
